@@ -66,7 +66,7 @@ video{
 
     cursor:pointer;
 
-    transition:.3s;
+    transition:opacity .3s;
 
     z-index:1000;
 
@@ -76,6 +76,7 @@ video{
 
     opacity:0;
     visibility:hidden;
+    pointer-events:none;
 
 }
 
@@ -98,6 +99,8 @@ video{
     user-select:none;
 
     transition:.2s;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.35);
 
 }
 
@@ -139,41 +142,7 @@ video{
 
     opacity:0;
 
-}
-
-/* -------------------- */
-/* REPLAY BUTTON */
-/* -------------------- */
-
-#replay{
-
-    position:fixed;
-
-    inset:0;
-
-    display:none;
-
-    justify-content:center;
-
-    align-items:center;
-
-    background:rgba(0,0,0,.45);
-
-    z-index:900;
-
-}
-
-#replay button{
-
-    font-size:22px;
-
-    padding:18px 34px;
-
-    border:none;
-
-    border-radius:40px;
-
-    cursor:pointer;
+    pointer-events:none;
 
 }
 
@@ -187,7 +156,7 @@ video{
 
 <video id="video" playsinline>
 
-<source src="Video10_Musikverein.mp4" type="video/mp4">
+<source src="video01.mp4" type="video/mp4">
 
 Dein Browser unterstützt dieses Video nicht.
 
@@ -213,62 +182,54 @@ Tippe auf das Video zum Pausieren oder Fortsetzen
 
 </div>
 
-<!-- REPLAY -->
-
-<div id="replay">
-
-<button>Noch einmal ansehen ▶</button>
-
-</div>
-
 <script>
 
-const video=document.getElementById("video");
-const overlay=document.getElementById("overlay");
-const replay=document.getElementById("replay");
-const hint=document.getElementById("hint");
+const video = document.getElementById("video");
+const overlay = document.getElementById("overlay");
+const hint = document.getElementById("hint");
 
-overlay.onclick=()=>{
+// Video starten
+overlay.onclick = () => {
 
-overlay.classList.add("hidden");
+    overlay.classList.add("hidden");
+    hint.classList.add("hidden");
 
-hint.classList.add("hidden");
+    video.play();
 
-video.play();
+};
 
-}
+// Pause / Fortsetzen durch Antippen
+video.onclick = () => {
 
-video.onclick=()=>{
+    if(video.paused){
 
-if(video.paused){
+        overlay.classList.add("hidden");
+        video.play();
 
-video.play();
+    }else{
 
-}
+        video.pause();
+        overlay.classList.remove("hidden");
 
-else{
+    }
 
-video.pause();
+};
 
-}
+// Wenn das Video endet
+video.onended = () => {
 
-}
+    video.currentTime = 0;
 
-video.onended=()=>{
+    overlay.classList.remove("hidden");
 
-video.currentTime=0;
+};
 
-replay.style.display="flex";
+// Sicherheit: Overlay ausblenden sobald das Video läuft
+video.onplay = () => {
 
-}
+    overlay.classList.add("hidden");
 
-replay.onclick=()=>{
-
-replay.style.display="none";
-
-video.play();
-
-}
+};
 
 </script>
 
